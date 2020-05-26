@@ -15,69 +15,74 @@ const render = require("./lib/htmlRenderer");
 // and to create objects for each team member (using the correct classes as blueprints!)
 const collectEmployees = async (employees = []) => {
 
-const questions = [
-    {
-        type: 'input',
-        name: 'name',
-        message: "Team member's first and last name:"
-    },
-    {
-        type: 'input',
-        name: 'email',
-        message: "Team member's email:"
-    },
-    {
-        type: 'input',
-        name: 'id',
-        message: "Team member's employee id:"
-    },
-    {
-        type: 'list',
-        name: 'role',
-        message: "Team member's role:",
-        choices: [
-            'Manager',
-            'Engineer',
-            'Intern'
-        ]
-    },
-    {
-        type: 'input',
-        name: 'number',
-        message: "Manager's phone number:",
-        when: (answers) => answers.role === 'Manager'
-    },
-    {
-        type: 'input',
-        name: 'github',
-        message: "Engineer's Github username:",
-        when: (answers) => answers.role === 'Engineer'
-    },
-    {
-        type: 'input',
-        name: 'school',
-        message: "School Intern is attending:",
-        when: (answers) => answers.role === 'Intern'
-    },
-    {
-        type: 'confirm',
-        name: 'again',
-        message: 'Enter another team member?',
-        default: false
-    }
-];
+    const questions = [
+        {
+            type: 'input',
+            name: 'name',
+            message: "Team member's first and last name:"
+        },
+        {
+            type: 'input',
+            name: 'email',
+            message: "Team member's email:"
+        },
+        {
+            type: 'input',
+            name: 'id',
+            message: "Team member's employee id:"
+        },
+        {
+            type: 'list',
+            name: 'role',
+            message: "Team member's role:",
+            choices: [
+                'Manager',
+                'Engineer',
+                'Intern'
+            ]
+        },
+        {
+            type: 'input',
+            name: 'number',
+            message: "Manager's phone number:",
+            when: (answers) => answers.role === 'Manager'
+        },
+        {
+            type: 'input',
+            name: 'github',
+            message: "Engineer's Github username:",
+            when: (answers) => answers.role === 'Engineer'
+        },
+        {
+            type: 'input',
+            name: 'school',
+            message: "School Intern is attending:",
+            when: (answers) => answers.role === 'Intern'
+        },
+        {
+            type: 'confirm',
+            name: 'again',
+            message: 'Enter another team member?',
+            default: false
+        }
+    ];
 
-const { again, ...answers } = await inquirer.prompt(questions);
-const newEmployees = [...employees, answers];
-return again ? collectEmployees(newEmployees) : newEmployees;
+    const { again, ...answers } = await inquirer.prompt(questions);
+    const newEmployees = [...employees, answers];
+    return again ? collectEmployees(newEmployees) : newEmployees;
 };
 
-const main = async () => {
+const init = async () => {
     const employees = await collectEmployees();
     console.log(employees);
+    var fileName = 'htmlRenderer.js';
+    let renderHtml = render(employees);
+    writeToFile(fileName, renderHtml);
+    console.log("Done!");
+
 };
 
-main();
+init();
 
 function writeToFile(fileName, answers) {
     fs.writeFile(fileName, answers, "utf8", function (err) {
@@ -86,17 +91,9 @@ function writeToFile(fileName, answers) {
     console.log("Render file is written.");
 };
 
-// function init() {
-//     inquirer
-//         .prompt(questions)
-//         .then(function (answers) {
-//             // var fileName = 'htmlRenderer.js';
-//             // let renderHtml = render(answers);
-//             // writeToFile(fileName, renderHtml);
-//             console.log("Done!");
-//         });
-// }
-// init()
+
+
+
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
