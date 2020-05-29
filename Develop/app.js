@@ -73,20 +73,24 @@ const collectEmployees = async (employees = []) => {
 };
 
 const init = async () => {
-    const employees = await collectEmployees();
-    console.log(employees);
-    var fileName = 'htmlRenderer.js';
-    let renderHtml = render(employees);
-    writeToFile(fileName, renderHtml);
-    console.log("Done!");
-
+    try {
+        const employees = await collectEmployees();
+        console.log(employees);
+        var fileName = outputPath;
+        writeToFile(fileName, employees);
+        console.log("Done!");
+    } catch (error) {
+        console.log("That didn't work.");
+        throw error;
+    }
 };
 
 init();
 
-function writeToFile(fileName, answers) {
-    fs.writeFile(fileName, answers, "utf8", function (err) {
+function writeToFile(fileName, employees) {
+    fs.writeFileSync(fileName, JSON.stringify(employees), "utf8", function (err) {
         if (err) throw err;
+        render(employees);
     });
     console.log("Render file is written.");
 };
