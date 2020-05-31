@@ -34,6 +34,7 @@ function managerQuestions() {
                 type: 'input',
                 name: 'idManager',
                 message: "Manager's employee id:",
+                validate: validateIDManager
             },
             {
                 type: 'input',
@@ -136,6 +137,18 @@ managerQuestions();
 function renderHtml() {
     let html = render(employeesArr);
     return writeFileAsync(outputPath, html);
+}
+
+function validateIDManager(idManager)
+{
+   var reg = /^\d+$/;
+   return reg.test(idManager) || "ID should be a number.";
+}
+
+function validateIDEmployee(idEmployee)
+{
+   var reg = /^\d+$/;
+   return reg.test(idEmployee) || "ID should be a number.";
 }
 
 
