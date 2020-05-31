@@ -4,98 +4,139 @@ const Intern = require("./lib/Intern");
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
+const util = require("util");
 
 const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
+const writeFileAsync = util.promisify(fs.writeFile);
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
-const collectEmployees = async (employees = []) => {
+const employeesArr = []
 
-    const questions = [
-        {
-            type: 'input',
-            name: 'name',
-            message: "Team member's first and last name:"
-        },
-        {
-            type: 'input',
-            name: 'email',
-            message: "Team member's email:"
-        },
-        {
-            type: 'input',
-            name: 'id',
-            message: "Team member's employee id:"
-        },
-        {
-            type: 'list',
-            name: 'role',
-            message: "Team member's role:",
-            choices: [
-                'Manager',
-                'Engineer',
-                'Intern'
-            ]
-        },
-        {
-            type: 'input',
-            name: 'number',
-            message: "Manager's phone number:",
-            when: (answers) => answers.role === 'Manager'
-        },
-        {
-            type: 'input',
-            name: 'github',
-            message: "Engineer's Github username:",
-            when: (answers) => answers.role === 'Engineer'
-        },
-        {
-            type: 'input',
-            name: 'school',
-            message: "School Intern is attending:",
-            when: (answers) => answers.role === 'Intern'
-        },
-        {
-            type: 'confirm',
-            name: 'again',
-            message: 'Enter another team member?',
-            default: false
-        }
-    ];
+function managerQuestions() {
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                name: 'nameManager',
+                message: "Manager's first and last name:"
+            },
+            {
+                type: 'input',
+                name: 'emailManager',
+                message: "Manager's email:"
+            },
+            {
+                type: 'input',
+                name: 'idManager',
+                message: "Manager's employee id:",
+            },
+            {
+                type: 'input',
+                name: 'officeNumber',
+                message: "Manager's phone number:",
+            }
+        ])
+        .then(function (response) {
+            let managerName = response.nameManager;
+            let managerEmail = response.emailManager;
+            let managerId = response.idManager;
+            let managerOfficeNumber = response.officeNumber;
+            let manager = new Manager(managerName, managerEmail, managerId, managerOfficeNumber);
+            employeesArr.push(manager);
+            employeeQuestions();
+        });
+}
 
-    const { again, ...answers } = await inquirer.prompt(questions);
-    const newEmployees = [...employees, answers];
-    return again ? collectEmployees(newEmployees) : newEmployees;
+function employeeQuestions() {
+    inquirer
+        .prompt(
+            [
+                {
+                    type: 'list',
+                    name: 'roleEmployee',
+                    message: "Team member's role:",
+                    choices: [
+                        'Engineer',
+                        'Intern'
+                    ]
+                },
+                {
+                    type: 'input',
+                    name: 'nameEmployee',
+                    message: "Employee's first and last name:"
+                },
+                {
+                    type: 'input',
+                    name: 'emailEmployee',
+                    message: "Employee's email:"
+                },
+                {
+                    type: 'input',
+                    name: 'idEmployee',
+                    message: "Employee's employee id:"
+                },
+                {
+                    type: 'input',
+                    name: 'githubEngineer',
+                    message: "Engineer's Github username:",
+                    when: (answers) => answers.roleEmployee === 'Engineer'
+                },
+                {
+                    type: 'input',
+                    name: 'schoolIntern',
+                    message: "School Intern is attending:",
+                    when: (answers) => answers.roleEmployee === 'Intern'
+                },
+                {
+                    type: 'list',
+                    name: 'again',
+                    message: 'Enter another employee?',
+                    choices: ['Yes', 'No']
+                }
+            ])
+        .then(function (response) {
+            let employeeRole = response.roleEmployee;
+            let employeeName = response.nameEmployee;
+            let employeeEmail = response.emailEmployee;
+            let employeeId = response.idEmployee;
+            let engineerGithub = response.githubEngineer;
+            let internSchool = response.schoolIntern;
+
+            if (employeeRole === "Engineer") {
+                let engineer = new Engineer(employeeName, employeeEmail, employeeId, engineerGithub);
+                employeesArr.push(engineer);
+                if (response.again === 'Yes') {
+                    employeeQuestions();
+                } else {
+                    renderHtml();
+                    console.log("Done entering employees");
+                    console.log(employeesArr);
+                }
+            } else if (employeeRole === "Intern") {
+                let intern = new Intern(employeeName, employeeEmail, employeeId, internSchool);
+                employeesArr.push(intern);
+                if (response.again === "Yes") {
+                    employeeQuestions();
+                } else {
+                    renderHtml();
+                    console.log("Done entering employees");
+                    console.log(employeesArr);
+                }
+            };
+        });
 };
 
-const init = async () => {
-    try {
-        const employees = await collectEmployees();
-        console.log(employees);
-        var fileName = outputPath;
-        writeToFile(fileName, employees);
-        console.log("Done!");
-    } catch (error) {
-        console.log("That didn't work.");
-        throw error;
-    }
-};
+managerQuestions();
 
-init();
-
-function writeToFile(fileName, employees) {
-    fs.writeFileSync(fileName, JSON.stringify(employees), "utf8", function (err) {
-        if (err) throw err;
-        render(employees);
-    });
-    console.log("Render file is written.");
-};
-
-
+function renderHtml() {
+    let html = render(employeesArr);
+    return writeFileAsync(outputPath, html);
+}
 
 
 // After the user has input all employees desired, call the `render` function (required
