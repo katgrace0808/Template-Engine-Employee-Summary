@@ -1,0 +1,32 @@
+.jumbotron{
+    background-image: url("https://image.shutterstock.com/image-photo/members-diverse-business-team-standing-260nw-1129837448.jpg");
+    background-size: auto;
+    opacity: 0.8;
+}
+
+.text-center {
+    font-weight: 700;
+    color: black;
+}
+
+.team-area {
+    flex-wrap: wrap;
+}
+
+.card-header {
+    background-color: rgb(84, 163, 209);
+    height: 150px;
+}
+
+.employee-card {
+    margin: 10px;
+    width: 250px;
+}
+
+.card-body {
+    background-color: gray;
+}
+
+.list-group-item {
+    background-color: rgb(229, 226, 226);
+}

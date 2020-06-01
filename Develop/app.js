@@ -23,12 +23,14 @@ function managerQuestions() {
             {
                 type: 'input',
                 name: 'nameManager',
-                message: "Manager's first and last name:"
+                message: "Manager's first and last name:",
+                validate: validateNameManager
             },
             {
                 type: 'input',
                 name: 'emailManager',
-                message: "Manager's email:"
+                message: "Manager's email:",
+                validate: validateEmailManager
             },
             {
                 type: 'input',
@@ -40,7 +42,8 @@ function managerQuestions() {
                 type: 'input',
                 name: 'officeNumber',
                 message: "Manager's phone number:",
-                validate: phoneNumber
+                default: "Enter format: (XXX) XXX-XXXX",
+                validate: validatePhoneNumber
             }
         ])
         .then(function (response) {
@@ -61,7 +64,7 @@ function employeeQuestions() {
                 {
                     type: 'list',
                     name: 'roleEmployee',
-                    message: "Team member's role:",
+                    message: "Employee's role:",
                     choices: [
                         'Engineer',
                         'Intern'
@@ -70,12 +73,14 @@ function employeeQuestions() {
                 {
                     type: 'input',
                     name: 'nameEmployee',
-                    message: "Employee's first and last name:"
+                    message: "Employee's first and last name:",
+                    validate: validateNameEmployee
                 },
                 {
                     type: 'input',
                     name: 'emailEmployee',
-                    message: "Employee's email:"
+                    message: "Employee's email:",
+                    validate: validateEmailEmployee
                 },
                 {
                     type: 'input',
@@ -87,6 +92,7 @@ function employeeQuestions() {
                     type: 'input',
                     name: 'githubEngineer',
                     message: "Engineer's Github username:",
+                    validate: validateGithubUsername,
                     when: (answers) => answers.roleEmployee === 'Engineer'
                 },
                 {
@@ -142,24 +148,50 @@ function renderHtml() {
 }
 
 // Functions to validate IDs
-function validateIDManager(idManager)
-{
-   let id = /^\d+$/;
-   return id.test(idManager) || "ID should be a number.";
+function validateIDManager(idManager) {
+    let id = /^\d+$/;
+    return id.test(idManager) || "ID should be a number.";
 }
 
-function validateIDEmployee(idEmployee)
-{
-   let id = /^\d+$/;
-   return id.test(idEmployee) || "ID should be a number.";
+function validateIDEmployee(idEmployee) {
+    let id = /^\d+$/;
+    return id.test(idEmployee) || "ID should be a number.";
 }
 
 // Function to validate phone numbers
-function phoneNumber(officeNumber)
-{
-  let phoneNumber = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-  return phoneNumber.test(officeNumber) || "Phone number is invalid.";
+function validatePhoneNumber(officeNumber) {
+    let phoneNumber = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+    return phoneNumber.test(officeNumber) || "Phone number is invalid.";
 }
+
+// Functions to validate emails
+function validateEmailManager(emailManager) {
+    let managerEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    return managerEmail.test(emailManager) || "Email is not valid.";
+}
+
+function validateEmailEmployee(emailEmployee) {
+    let employeeEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    return employeeEmail.test(emailEmployee) || "Email is not valid.";
+}
+
+// Functions to validate names
+function validateNameManager(nameManager) {
+    let managerName = /^[A-Za-z ]+$/;
+    return managerName.test(nameManager) || "Name must contain only letters.";
+}
+
+function validateNameEmployee(nameEmployee) {
+    let employeeName = /^[A-Za-z ]+$/;
+    return employeeName.test(nameEmployee) || "Name must contain only letters.";
+}
+
+// Function to validate Github username
+function validateGithubUsername(githubEngineer) {
+    let engineerGithubUsername = /^[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}$/i;
+    return engineerGithubUsername.test(githubEngineer) || "Github username is invalid.";
+}
+
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
