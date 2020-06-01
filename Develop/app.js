@@ -40,6 +40,7 @@ function managerQuestions() {
                 type: 'input',
                 name: 'officeNumber',
                 message: "Manager's phone number:",
+                validate: phoneNumber
             }
         ])
         .then(function (response) {
@@ -79,7 +80,8 @@ function employeeQuestions() {
                 {
                     type: 'input',
                     name: 'idEmployee',
-                    message: "Employee's employee id:"
+                    message: "Employee's employee id:",
+                    validate: validateIDEmployee
                 },
                 {
                     type: 'input',
@@ -139,19 +141,25 @@ function renderHtml() {
     return writeFileAsync(outputPath, html);
 }
 
+// Functions to validate IDs
 function validateIDManager(idManager)
 {
-   var reg = /^\d+$/;
-   return reg.test(idManager) || "ID should be a number.";
+   let id = /^\d+$/;
+   return id.test(idManager) || "ID should be a number.";
 }
 
 function validateIDEmployee(idEmployee)
 {
-   var reg = /^\d+$/;
-   return reg.test(idEmployee) || "ID should be a number.";
+   let id = /^\d+$/;
+   return id.test(idEmployee) || "ID should be a number.";
 }
 
-
+// Function to validate phone numbers
+function phoneNumber(officeNumber)
+{
+  let phoneNumber = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+  return phoneNumber.test(officeNumber) || "Phone number is invalid.";
+}
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
