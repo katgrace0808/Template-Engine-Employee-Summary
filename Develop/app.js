@@ -48,10 +48,10 @@ function managerQuestions() {
         ])
         .then(function (response) {
             let managerName = response.nameManager;
-            let managerEmail = response.emailManager;
             let managerId = response.idManager;
+            let managerEmail = response.emailManager;
             let managerOfficeNumber = response.officeNumber;
-            let manager = new Manager(managerName, managerEmail, managerId, managerOfficeNumber);
+            let manager = new Manager(managerName, managerId, managerEmail, managerOfficeNumber);
             employeesArr.push(manager);
             employeeQuestions();
         });
@@ -111,13 +111,13 @@ function employeeQuestions() {
         .then(function (response) {
             let employeeRole = response.roleEmployee;
             let employeeName = response.nameEmployee;
-            let employeeEmail = response.emailEmployee;
             let employeeId = response.idEmployee;
+            let employeeEmail = response.emailEmployee;
             let engineerGithub = response.githubEngineer;
             let internSchool = response.schoolIntern;
 
             if (employeeRole === "Engineer") {
-                let engineer = new Engineer(employeeName, employeeEmail, employeeId, engineerGithub);
+                let engineer = new Engineer(employeeName, employeeId, employeeEmail, engineerGithub);
                 employeesArr.push(engineer);
                 if (response.again === 'Yes') {
                     employeeQuestions();
