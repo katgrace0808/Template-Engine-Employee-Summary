@@ -42,7 +42,7 @@ function managerQuestions() {
                 type: 'input',
                 name: 'officeNumber',
                 message: "Manager's phone number:",
-                default: "Enter format: (XXX) XXX-XXXX",
+                default: "Enter 10-digits",
                 validate: validatePhoneNumber
             }
         ])
@@ -123,18 +123,16 @@ function employeeQuestions() {
                     employeeQuestions();
                 } else {
                     renderHtml();
-                    console.log("Done entering employees");
-                    console.log(employeesArr);
+                    console.log("All employees entered.");
                 }
             } else if (employeeRole === "Intern") {
-                let intern = new Intern(employeeName, employeeEmail, employeeId, internSchool);
+                let intern = new Intern(employeeName, employeeId, employeeEmail, internSchool);
                 employeesArr.push(intern);
                 if (response.again === "Yes") {
                     employeeQuestions();
                 } else {
                     renderHtml();
-                    console.log("Done entering employees");
-                    console.log(employeesArr);
+                    console.log("All employees entered.");
                 }
             };
         });
