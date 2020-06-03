@@ -3,6 +3,7 @@
 A command line application that gathers information on a manager and their team of engineers and interns.
 
 ![badmath](https://img.shields.io/github/languages/top/nielsenjared/badmath)
+[![Generic badge](https://img.shields.io/badge/node.js-100%-green.svg)](https://shields.io/)
 
 ## Description
 
